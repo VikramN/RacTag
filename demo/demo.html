@@ -1,0 +1,305 @@
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<script src="ractive.min.js"></script>
+		<style>
+			
+			@import url(http://fonts.googleapis.com/css?family=Roboto+Condensed);
+	
+			body{
+				font-family: 'Roboto Condensed', sans-serif;
+				width: 90%;
+				margin: 10px auto;
+				font-size: 16px;
+				margin-top: 30px;
+			}
+	
+			a {
+				text-decoration: none;
+				color: #ff604c;
+			}
+			
+			input {
+				font-size: 16px;
+				padding: 5px;
+			}
+			
+			.col {
+				width: 40%;
+				display: inline-block;
+				vertical-align: top;
+				margin-left: 50px;
+			}
+		
+		</style>
+		
+		<style>
+			.tagContainer { display: inline; }
+			.tagInputContainer { display: inline; }
+			.tag { border: 1px solid #B8B9BA; border-radius: 5px; background-color: transparent; padding: 5px 5px 5px 10px; margin: 2px; display: inline-block; }.tagInput1 { outline: none; border: 0px; height: 20px; margin: 2px; }
+			.tagInput { outline: none; border: 0px; border-bottom: 1px solid #6DAFF3; margin: 5px; display: inline;  }
+			.deleteTag { border: 0; border-radius: 21px; color: #ff604c; padding: 0px 4px 1px 4px; text-decoration: none; outline: none; cursor: pointer; background-color: transparent; font-weight: bold; }
+			.deleteTag:hover { color: red; }
+			.deleteTag:before { content: '✖'; }
+		</style>
+		
+	</head>
+	<body>
+		<div style="width: 99%; margin: 0 auto;">
+			<h1>Ractag</h1>
+			<p>Ractive.JS Tag Component</p>
+			<h3>Demos</h3>
+			<hr>
+			<div style="0px auto">
+				<div class="col">
+					<h4>Example #1</h4>
+					<p>
+						Create tags from input. <br>
+						Bare-minimal. No options 	<br>
+						Type in the blue text box to see <br>
+					</p>
+	
+					<div style="border: 1px solid #ddd">
+						<div id="tagger_1"></div>	
+					</div>
+				</div>
+				<div class="col">
+					<h4>Code</h4>
+					<pre>
+var tagger1 = new RacTag({
+    el: 'tagger_1',
+    data: { }
+});		
+					</pre>
+				</div>
+				<hr>
+				<div class="col">
+					<h4>Example #2</h4>
+					<p>
+						Show input before the tag <br>
+						Tags come in the next line<br>
+					</p>
+					<div style="border: 1px solid #ddd">
+						<div id="tagger_2"></div>	
+					</div>
+				</div>
+				<div class="col">
+					<h4>Code</h4>
+					<pre>
+var tagger2 = new RacTag({
+    el: 'tagger_2',
+    data: {
+        <b>flip</b> : true,                     
+        tags: ['C#', 'Javascript', 'Dart'],
+    }
+});
+					</pre>					
+				</div>
+				<hr>				
+				<div class="col">
+					<h4>Example #3</h4>
+					<p>
+						Customize the delim chars <br>
+						Default ones are comma and space<br>
+						This example tags when user types in '+'
+					</p>
+					<div style="border: 1px solid #ddd">
+						<div id="tagger_3"></div>	
+					</div>
+				</div>
+				<div class="col">
+					<h4>Code</h4>
+					<pre>
+var tagger3 = new RacTag({
+    el: 'tagger_3',
+    data: {
+        tags: ['Use', 'Plus', 'To', 'Create', 'Tags'],
+        <b>breaks</b> : ['+'],
+    }
+});					
+					</pre>					
+				</div>
+				
+				<hr>
+				
+				<div class="col">
+					<h4>Example #4</h4>
+					<p>
+						You can handle events <br>
+						Events are sent before adding and before deleting <br>
+					</p>
+					<div style="border: 1px solid #ddd">
+						<div id="tagger_4"></div>	
+					</div>
+				</div>
+				<div class="col">
+					<h4>Code</h4>
+					<pre>
+var tagger4 = new RacTag({
+    el: 'tagger_4',
+    data: { 
+        tags: ['lowercase-input-only','and-cant', 'delete', 'these', '5'],
+		
+        <b> 
+        // Return value becomes tag
+        // Return null to prevent add</b>
+        onTag : function(tag){
+            console.log('Adding Tag => '  + tag );
+            return tag.toLowerCase();
+        },                
+            
+        <b>// Return true to allow deletion</b>	
+        onRemove : function(index, tag) {
+            console.log('Removing Tag => '  + tag );
+            return (index >= 5 );
+        }
+    }
+});					
+					</pre>
+				</div>
+			</div>
+		</div>		
+		
+		<!--Ractag.html-->
+		<script type="text/ractive" id="ractag">
+			<div>
+				{{#if flip}}
+					<div>
+						<div class="tagInputContainer">
+							<input class="tagInput" type="text" on-keyup="onkey" on-blur="onblur" value={{tag}}>
+						</div>
+					</div>
+					<div class="tagContainer" >
+						{{#tags:i}}
+						<div class="tag">
+							<span>{{ this }}</span>
+							<button style="display:inline;" class="deleteTag" on-click="remove" data-index={{i}}></button>
+						</div>
+						{{/tags}}
+					</div>
+				{{ else }}
+					<div class="tagContainer" >
+						{{#tags:i}}
+						<div class="tag">
+							<span>{{ this }}</span>
+							<button style="display:inline;" class="deleteTag" on-click="remove" data-index={{i}}></button>
+						</div>
+						{{/tags}}
+					</div>
+					<div class="tagInputContainer" >
+						<input class="tagInput" type="text" on-keyup="onkey" on-blur="onblur" value={{tag}}>
+					</div>
+				{{/if}}
+			</div>
+		</script>
+		
+		<!--Ractag.js-->
+		<script>
+			var RacTag = Ractive.extend({
+				template: '#ractag',
+				oninit: function() {
+					var me = this;
+					var t = me.get();
+					
+					if(!t.tags) me.set('tags', []);
+					var breaks = t.breaks && t.breaks.length > 0 ? t.breaks : [',',' '];
+					var tagRegex = new RegExp('[' + breaks.join('') + ']');
+					
+					var addTag = function(tag){
+						var tags = tag.split(tagRegex);						
+						tags.forEach(function(x){
+							if(x && x !== '') {
+								var x2 = t.onTag? t.onTag(x) : x;
+								if(x2 && x2 !== '') {
+									t.tags.push(x2);	
+								}	
+							}							
+						});
+					};
+					
+					var hasDelim = function(txt) {						
+						for(var i =0; i < breaks.length; i++){
+							if(txt.indexOf(breaks[i]) !== -1){
+								return true;
+							}
+						}
+			
+						return false;
+					};
+					
+					this.on('onkey', function(ev){
+						var e = ev.original;
+						if(e.keyCode === 13){
+							if(e.preventDefault) { e.preventDefault(); }
+							addTag(t.tag);
+							me.set('tag', '');
+							return false;
+						}
+						
+						if(t.tag.length > 1 && hasDelim(t.tag)){
+							addTag(t.tag);
+							me.set('tag', '');
+						}
+					});
+					
+					this.on('onblur', function(e){
+						addTag(t.tag);
+						me.set('tag', '');
+					})
+					
+					this.on('remove', function(e){
+						var ix = parseInt(e.node.attributes['data-index'].value);
+						var tag = t.tags[ix];
+						if(t.onRemove? t.onRemove(ix, tag) : true) { 
+							t.tags.splice(ix, 1);
+						}						
+					});
+				}
+			});
+		</script>
+		<script>
+			
+			var tagger1 = new RacTag({
+				el: 'tagger_1',
+				data: { }
+			});
+			
+			var tagger2 = new RacTag({
+				el: 'tagger_2',
+				data: {
+					flip : true,					 
+					tags: ['C#', 'Javascript', 'Dart'],
+				}
+			});
+			
+			var tagger3 = new RacTag({
+				el: 'tagger_3',
+				data: {
+					tags: ['Use', 'Plus', 'To', 'Create', 'Tags'],
+					breaks : ['+'],
+				}
+			});
+			
+			var tagger4 = new RacTag({
+				el: 'tagger_4',
+				data: { 
+					tags: ['lowercase-input-only','and-cant', 'delete', 'these', '5'],
+					
+					// Return value becomes tag
+					// Return null to prevent add
+					onTag : function(tag){
+						console.log('Adding Tag => '  + tag );
+						return tag.toLowerCase();
+					},				
+						
+					// Return true to allow delete
+					onRemove : function(index, tag) {
+						console.log('Removing Tag => '  + tag );
+						return (index >= 5 );
+					}
+				}
+			});
+			
+		</script>		
+	</body>
+</html>
